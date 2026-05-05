@@ -221,7 +221,7 @@ export default function HomePage() {
       </div>
 
       <Link className="assistant-fab" href="/assistant" aria-label="Open Scuba assistant">
-        AI
+        scuba
       </Link>
     </main>
   );

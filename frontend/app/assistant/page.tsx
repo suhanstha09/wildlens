@@ -1,4 +1,10 @@
+"use client";
+
+import { useRouter } from 'next/navigation';
+
 export default function AssistantPage() {
+  const router = useRouter();
+
   return (
     <main className="assistant-shell">
       <aside className="assistant-sidebar">
@@ -27,7 +33,12 @@ export default function AssistantPage() {
 
       <section className="assistant-main">
         <header className="assistant-header">
-          <h1>Scuba Assistant</h1>
+          <div className="assistant-header-copy">
+            <button className="ghost-button assistant-back-button" type="button" onClick={() => router.back()}>
+              ← Back
+            </button>
+            <h1>Scuba Assistant</h1>
+          </div>
           <div className="assistant-status">MODEL: WILDLENS-LMM-4.0 · CONTEXT: REGION-AMAZONAS</div>
         </header>
 
