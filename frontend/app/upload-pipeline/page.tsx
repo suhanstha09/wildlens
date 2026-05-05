@@ -153,7 +153,7 @@ export default function UploadPipelinePage() {
       </div>
 
       <Link className="assistant-fab" href="/assistant" aria-label="Open Scuba assistant">
-        AI
+        scuba
       </Link>
     </main>
   );

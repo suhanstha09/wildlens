@@ -117,7 +117,7 @@ export default function GalleryReviewPage() {
         </div>
       </div>
 
-      <Link className="assistant-fab" href="/assistant" aria-label="Open Scuba assistant">AI</Link>
+      <Link className="assistant-fab" href="/assistant" aria-label="Open Scuba assistant">scuba</Link>
     </main>
   );
 }
