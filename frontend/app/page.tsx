@@ -1,227 +1,418 @@
 import Link from 'next/link';
 
+const activityItems = [
+  ['Panthera onca detected', 'Station 04 · 2 min ago', 'High priority'],
+  ['False trigger: wind', 'Station 12 · 15m ago', 'Filtered'],
+  ['Cabidae group sighted', 'Station 09 · 44m ago', 'Verified'],
+  ['Low battery warning', 'Station 02 · 1h ago', 'Action needed'],
+];
+
+const detections = [
+  {
+    title: 'Tapir terrestris',
+    score: '99% match',
+    image: 'https://images.unsplash.com/photo-1561731216-c3a4d99437d5?auto=format&fit=crop&w=600&q=80',
+  },
+  {
+    title: 'Jaguar cub',
+    score: '98% match',
+    image: 'https://images.unsplash.com/photo-1501706362039-c6e80948d6b8?auto=format&fit=crop&w=600&q=80',
+  },
+  {
+    title: 'Fox profile',
+    score: '98% match',
+    image: 'https://images.unsplash.com/photo-1552410260-0fd9b577afa6?auto=format&fit=crop&w=600&q=80',
+  },
+  {
+    title: 'Macaw pair',
+    score: '98% match',
+    image: 'https://images.unsplash.com/photo-1501706362039-c6e80948d6b8?auto=format&fit=crop&w=600&q=80&sat=-40',
+  },
+  {
+    title: 'Coyote pack',
+    score: '98% match',
+    image: 'https://images.unsplash.com/photo-1546182990-dffeafbe841d?auto=format&fit=crop&w=600&q=80',
+  },
+];
+
 export default function HomePage() {
   return (
-    <main className="dashboard-shell">
-      <aside className="sidebar">
-        <div className="brand-lockup">
+    <main className="screen-shell">
+      <style>{`
+        /* ── TOPBAR ── */
+        .site-topbar {
+          display: grid;
+          grid-template-columns: auto minmax(0, 1fr) auto;
+          align-items: center;
+          gap: 20px;
+          padding: 12px 22px;
+          border-bottom: 1px solid var(--outline-variant);
+          background: rgba(248, 249, 248, 0.94);
+          backdrop-filter: blur(12px);
+          position: sticky;
+          top: 0;
+          z-index: 20;
+        }
+        .site-brand {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+        .site-brand strong {
+          font-size: 1rem;
+          letter-spacing: -0.02em;
+        }
+        .site-search {
+          display: flex;
+          justify-content: center;
+        }
+        .searchbar {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 10px 14px;
+          border: 1px solid var(--outline-variant);
+          border-radius: 2px;
+          background: rgba(248, 249, 248, 0.84);
+          color: var(--on-surface-variant);
+          width: min(38vw, 420px);
+        }
+        .searchbar input {
+          width: 100%;
+          border: 0;
+          outline: 0;
+          background: transparent;
+          color: var(--on-surface);
+          font: inherit;
+        }
+        .site-actions {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          justify-self: end;
+        }
+
+        /* ── SHELL ── */
+        .home-shell {
+          display: grid !important;
+          grid-template-columns: 290px minmax(0, 1fr) !important;
+          min-height: calc(100vh - 57px);
+          align-items: start;
+        }
+
+        /* ── SIDEBAR ── */
+        .home-sidebar {
+          padding: 20px 16px;
+          border-right: 1px solid var(--outline-variant);
+          background: rgba(248, 249, 248, 0.82);
+          display: flex;
+          flex-direction: column;
+          min-height: calc(100vh - 57px);
+          position: sticky;
+          top: 57px;
+        }
+        .home-sidebar .brand-lockup {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-bottom: 20px;
+        }
+        .home-sidebar .brand-mark {
+          width: 40px;
+          height: 40px;
+          border-radius: 10px;
+          display: grid;
+          place-items: center;
+          background: var(--primary);
+          color: var(--on-primary);
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          font-size: 13px;
+          flex-shrink: 0;
+        }
+        .home-sidebar .brand-title { font-weight: 700; margin: 0; font-size: 0.95rem; }
+        .home-sidebar .brand-subtitle { color: var(--on-surface-variant); font-size: 0.82rem; margin: 0; }
+
+        .home-sidebar .new-dataset-button {
+          width: 100%;
+          padding: 14px 18px;
+          border-radius: 6px;
+          font-weight: 600;
+          background: var(--primary);
+          color: var(--on-primary);
+          border: 0;
+          font: inherit;
+          font-weight: 600;
+          cursor: pointer;
+          box-shadow: 0 8px 20px rgba(26, 60, 52, 0.16);
+          margin-bottom: 14px;
+          text-align: left;
+        }
+
+        .home-sidebar .nav-stack {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          flex: 1;
+        }
+        .home-sidebar .nav-item {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 10px 12px;
+          border-radius: 6px;
+          color: var(--on-surface-variant);
+          text-decoration: none;
+          border: 1px solid transparent;
+          font-size: 0.95rem;
+          transition: background 0.15s;
+        }
+        .home-sidebar .nav-item:hover { background: var(--surface-container-low); }
+        .home-sidebar .nav-item.active {
+          color: var(--on-surface);
+          background: var(--surface-container-lowest);
+          border-color: var(--outline-variant);
+        }
+        .home-sidebar .nav-icon {
+          width: 18px;
+          text-align: center;
+          color: var(--primary);
+        }
+        .home-sidebar .assistant-assistant-button {
+          min-height: 44px;
+          padding: 0 18px;
+          border: 1px solid var(--outline-variant);
+          border-radius: 6px;
+          background: var(--surface-container-lowest);
+          color: var(--on-surface);
+          font: inherit;
+          font-weight: 600;
+          cursor: pointer;
+          margin-top: 12px;
+          text-align: left;
+        }
+        .home-sidebar .assistant-support-link {
+          color: var(--on-surface-variant);
+          text-decoration: none;
+          margin-top: 10px;
+          font-size: 0.88rem;
+        }
+
+        /* ── SCUBA FAB ── */
+        .scuba-fab {
+          position: fixed;
+          bottom: 24px;
+          right: 24px;
+          background: var(--surface-container-lowest);
+          border: 1px solid var(--outline-variant);
+          border-radius: 24px;
+          padding: 11px 18px;
+          color: var(--on-surface);
+          font-size: 0.9rem;
+          font-weight: 600;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          z-index: 60;
+          text-decoration: none;
+          transition: all 0.15s;
+          box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+        .scuba-fab:hover {
+          background: var(--surface-container-high);
+          border-color: var(--primary);
+          box-shadow: 0 4px 20px rgba(26,60,52,0.15);
+        }
+        .scuba-dot {
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: var(--primary);
+          flex-shrink: 0;
+        }
+      `}</style>
+
+      {/* ── SITE TOPBAR ── */}
+      <header className="site-topbar">
+        <div className="site-brand" aria-label="Wild Lens home">
           <div className="brand-mark">WL</div>
-          <div>
-            <p className="brand-title">Wild Lens</p>
-            <p className="brand-subtitle">Scientific hub</p>
-          </div>
+          <strong>Wild Lens</strong>
         </div>
-
-        <button className="new-dataset-button" type="button">
-          + New Dataset
-        </button>
-
-        <nav className="nav-stack" aria-label="Primary navigation">
-          {[
-            ['Dashboard', '/'],
-            ['Upload Pipeline', '/upload-pipeline'],
-            ['Gallery Review', '/gallery-review'],
-            ['Analytics', '/analytics'],
-          ].map(([item, href], index) => (
-            <a key={item} className={`nav-item ${index === 0 ? 'active' : ''}`} href={href}>
-              <span className="nav-icon" aria-hidden="true">
-                {index === 0 ? '◫' : index === 1 ? '↑' : index === 2 ? '▣' : '▤'}
-              </span>
-              {item}
-            </a>
-          ))}
-        </nav>
-
-        <div className="sidebar-footer">
-          <a href="#">Documentation</a>
-          <a href="#">Support</a>
+        <div className="site-search">
+          <label className="searchbar" aria-label="Search datasets, species, or locations">
+            <span aria-hidden="true">⌕</span>
+            <input type="search" placeholder="Search datasets, species, or locations..." />
+          </label>
         </div>
-      </aside>
+        <div className="site-actions">
+          <button className="icon-button" type="button" aria-label="Notifications">◔</button>
+          <button className="icon-button" type="button" aria-label="Settings">⚙</button>
+          <div className="avatar" aria-hidden="true">R</div>
+        </div>
+      </header>
 
-      <div className="dashboard-main">
-        <header className="topbar">
-          <div>
-            <p className="eyebrow">Wildlife Monitoring · Field Station 04</p>
-            <h1>Monitoring Overview</h1>
+      <div className="dashboard-shell home-shell">
+        {/* ── SIDEBAR ── */}
+        <aside className="home-sidebar">
+          <div className="brand-lockup">
+            <div className="brand-mark">WL</div>
+            <div>
+              <p className="brand-title">Wildlife Monitoring</p>
+              <p className="brand-subtitle">Field Station 04</p>
+            </div>
           </div>
 
-          <div className="topbar-actions">
-            <label className="searchbar" aria-label="Search data">
-              <span aria-hidden="true">⌕</span>
-              <input type="search" placeholder="Search datasets, species, or locations..." />
-            </label>
-            <button className="icon-button" type="button" aria-label="Notifications">◔</button>
-            <button className="icon-button" type="button" aria-label="Settings">⚙</button>
-            <div className="avatar" aria-hidden="true">R</div>
-          </div>
-        </header>
+          <button className="new-dataset-button" type="button">+ New Dataset</button>
 
-        <section className="hero-row">
-          <div>
-            <p className="section-kicker">Real-time ecological data</p>
-            <p className="lede">A high-utility interface for researchers tracking captures, reviewing false triggers, and monitoring the health of remote camera traps.</p>
-          </div>
-          <div className="hero-actions">
-            <button className="primary-button" type="button">Export Report</button>
-            <button className="secondary-button" type="button">Configure AI</button>
-          </div>
-        </section>
+          <nav className="nav-stack" aria-label="Primary navigation">
+            {[
+              ['Dashboard', '/', '◫'],
+              ['Upload Pipeline', '/upload-pipeline', '↑'],
+              ['Gallery Review', '/gallery-review', '▣'],
+              ['Analytics', '/analytics', '▤'],
+            ].map(([item, href, icon], index) => (
+              <a key={item} className={`nav-item ${index === 0 ? 'active' : ''}`} href={href}>
+                <span className="nav-icon" aria-hidden="true">{icon}</span>
+                {item}
+              </a>
+            ))}
+          </nav>
 
-        <section className="stats-grid">
-          <article className="stat-card">
-            <p className="card-label">Total Images Processed</p>
-            <div className="stat-row">
-              <strong>128,402</strong>
-              <span className="trend positive">+12%</span>
-            </div>
-            <div className="meter"><span style={{ width: '84%' }} /></div>
-          </article>
-          <article className="stat-card">
-            <p className="card-label">Wildlife Detected</p>
-            <div className="stat-row">
-              <strong>64.2%</strong>
-              <span className="trend muted">Sage Stable</span>
-            </div>
-            <div className="mini-bars" aria-hidden="true">
-              <span style={{ height: '28%' }} />
-              <span style={{ height: '42%' }} />
-              <span className="highlight" style={{ height: '72%' }} />
-              <span style={{ height: '36%' }} />
-              <span className="highlight" style={{ height: '60%' }} />
-              <span className="highlight" style={{ height: '56%' }} />
-            </div>
-          </article>
-          <article className="stat-card">
-            <p className="card-label">False Triggers Filtered</p>
-            <div className="stat-row">
-              <strong>42,109</strong>
-              <span className="trend warning">Ochre at Risk</span>
-            </div>
-            <p className="body-note">Efficiency optimized by 4.2% since last sync.</p>
-          </article>
-        </section>
+          <button className="assistant-assistant-button" type="button">AI Assistant Scuba</button>
+          <a className="assistant-support-link" href="#">Support</a>
+        </aside>
 
-        <section className="content-grid">
-          <article className="panel panel-large chart-panel">
-            <div className="panel-header">
-              <div>
-                <p className="card-label">Animal Activity over 24 Hours</p>
-                <h2>Temporal distribution of captured triggers</h2>
+        {/* ── DASHBOARD MAIN ── */}
+        <div className="dashboard-main">
+          <section className="hero-row home-hero">
+            <div>
+              <p className="eyebrow">Wildlife Monitoring · Field Station 04</p>
+              <h1>Monitoring Overview</h1>
+              <p className="lede">Real-time ecological data from the Amazon Basin North Sector.</p>
+            </div>
+          </section>
+
+          <section className="stats-grid home-stats">
+            <article className="stat-card">
+              <p className="card-label">Total Images Processed</p>
+              <div className="stat-row">
+                <strong>128,402</strong>
+                <span className="trend positive">+12%</span>
               </div>
-              <div className="legend"><span><i className="legend-dot mammals" />Mammals</span><span><i className="legend-dot avian" />Avian</span></div>
-            </div>
-            <div className="chart" aria-hidden="true">
-              <span className="grid-line line-1" />
-              <span className="grid-line line-2" />
-              <span className="grid-line line-3" />
-              <span className="grid-line line-4" />
-              <span className="axis axis-left">00:00</span>
-              <span className="axis axis-mid">12:00</span>
-              <span className="axis axis-right">23:59</span>
-              <svg viewBox="0 0 720 280" preserveAspectRatio="none" className="chart-svg">
-                <path d="M 0 228 C 80 228, 120 220, 160 192 S 260 92, 340 96 S 460 218, 560 180 S 640 92, 720 80" className="chart-line mammals" />
-                <path d="M 0 252 C 90 246, 140 232, 220 222 S 360 214, 430 236 S 560 248, 620 212 S 690 190, 720 172" className="chart-line avian" />
-              </svg>
-            </div>
-          </article>
-
-          <article className="panel panel-side species-panel">
-            <div className="panel-header compact">
-              <div>
-                <p className="card-label">Species Distribution</p>
-                <h2>Volume per classification</h2>
+              <div className="meter"><span style={{ width: '84%' }} /></div>
+            </article>
+            <article className="stat-card">
+              <p className="card-label">Wildlife Detected</p>
+              <div className="stat-row">
+                <strong>64.2%</strong>
+                <span className="trend muted">Sage Stable</span>
               </div>
-            </div>
-            <div className="species-list">
-              {[
-                ['White-tailed Deer', '78%'],
-                ['Red Fox', '61%'],
-                ['Coyote', '48%'],
-                ['Black Bear', '33%'],
-                ['Others', '18%'],
-              ].map(([name, value], index) => (
-                <div className="species-row" key={name}>
-                  <div className="species-meta">
-                    <span>{name}</span>
-                    <strong>{value}</strong>
-                  </div>
-                  <div className="species-bar"><span style={{ width: value }} className={index < 2 ? 'moss' : index === 2 ? 'clay' : index === 3 ? 'dark' : 'light'} /></div>
+              <div className="mini-bars" aria-hidden="true">
+                <span style={{ height: '28%' }} />
+                <span style={{ height: '42%' }} />
+                <span className="highlight" style={{ height: '72%' }} />
+                <span style={{ height: '36%' }} />
+                <span className="highlight" style={{ height: '60%' }} />
+                <span className="highlight" style={{ height: '56%' }} />
+              </div>
+            </article>
+            <article className="stat-card">
+              <p className="card-label">False Triggers Filtered</p>
+              <div className="stat-row">
+                <strong>42,109</strong>
+                <span className="trend warning">Ochre At Risk</span>
+              </div>
+              <p className="body-note">Efficiency optimized by 4.2% since last sync.</p>
+            </article>
+          </section>
+
+          <section className="content-grid home-content-grid">
+            <article className="panel panel-large map-panel">
+              <div className="panel-header">
+                <div>
+                  <p className="card-label">Camera Trap Network</p>
+                  <h2>24 Active</h2>
                 </div>
-              ))}
-            </div>
-            <button className="ghost-button" type="button">Export Species Report</button>
-          </article>
-        </section>
-
-        <section className="content-grid lower-grid">
-          <article className="panel panel-large table-panel">
-            <div className="panel-header">
-              <div>
-                <p className="card-label">Camera Trap Performance</p>
-                <h2>Hardware health and efficiency metrics</h2>
+                <div className="network-status">
+                  <span className="status-chip">24 Active</span>
+                  <span className="status-chip offline">2 Offline</span>
+                </div>
               </div>
-            </div>
-            <table className="performance-table">
-              <thead>
-                <tr>
-                  <th>Trap Unit ID</th>
-                  <th>Uptime</th>
-                  <th>Trigger Rate</th>
-                  <th>Battery</th>
-                  <th>Storage</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  ['UNIT-04-A1', '99.8%', '12.4 / hr', '84%', '64%'],
-                  ['UNIT-04-A2', '94.2%', '8.1 / hr', '32%', '78%'],
-                  ['UNIT-04-B1', '100%', '24.7 / hr', 'Solar', '18%'],
-                  ['UNIT-04-C5', '0.0%', '0.0 / hr', '0%', '4%'],
-                ].map((row) => (
-                  <tr key={row[0]}>
-                    <td>{row[0]}</td>
-                    <td>{row[1]}</td>
-                    <td>{row[2]}</td>
-                    <td>{row[3]}</td>
-                    <td>
-                      <div className="meter meter-inline"><span style={{ width: row[4] }} /></div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </article>
+              <div className="network-map" aria-hidden="true">
+                <span className="map-pin" style={{ left: '22%', top: '38%' }} />
+                <span className="map-pin" style={{ left: '46%', top: '56%' }} />
+                <span className="map-pin offline" style={{ left: '67%', top: '64%' }} />
+                <span className="map-pin" style={{ left: '35%', top: '70%' }} />
+              </div>
+            </article>
 
-          <article className="panel panel-side activities-panel">
+            <article className="panel panel-side activities-panel home-activity-panel">
+              <div className="panel-header compact">
+                <div>
+                  <p className="card-label">Recent Activity</p>
+                  <h2>Live field updates</h2>
+                </div>
+              </div>
+              <ul className="activity-list">
+                {activityItems.map(([title, meta, badge]) => (
+                  <li key={title}>
+                    <div className="activity-marker" />
+                    <div>
+                      <strong>{title}</strong>
+                      <p>{meta}</p>
+                    </div>
+                    <span className="status-chip">{badge}</span>
+                  </li>
+                ))}
+              </ul>
+              <button className="ghost-button home-activity-button" type="button">
+                View All Activity
+              </button>
+            </article>
+          </section>
+
+          <section className="panel detections-panel">
             <div className="panel-header compact">
               <div>
-                <p className="card-label">Recent Activity</p>
-                <h2>Live field updates</h2>
+                <p className="card-label">High-Confidence Detections</p>
+                <h2>Species cards from the latest batch</h2>
+              </div>
+              <div className="detection-actions">
+                <button className="secondary-button" type="button">Filter Species</button>
+                <button className="secondary-button" type="button">Unknown Species</button>
+                <button className="primary-button" type="button">Export CSV</button>
               </div>
             </div>
-            <ul className="activity-list">
-              {[
-                ['Panthera onca detected', 'Station 04 · 2 min ago', 'High priority'],
-                ['False trigger: wind', 'Station 12 · 15m ago', 'Filtered'],
-                ['Cabidae group sighted', 'Station 09 · 44m ago', 'Verified'],
-                ['Low battery warning', 'Station 02 · 1h ago', 'Action needed'],
-              ].map(([title, meta, badge]) => (
-                <li key={title}>
-                  <div className="activity-marker" />
-                  <div>
-                    <strong>{title}</strong>
-                    <p>{meta}</p>
+            <div className="detection-strip">
+              {detections.map((item) => (
+                <article className="detection-card" key={item.title}>
+                  <div
+                    className="detection-image"
+                    style={{ backgroundImage: `linear-gradient(180deg, rgba(1,38,31,0.12), rgba(1,38,31,0.5)), url(${item.image})` }}
+                  />
+                  <div className="detection-caption">
+                    <strong>{item.title}</strong>
+                    <span>{item.score}</span>
                   </div>
-                  <span className="status-chip">{badge}</span>
-                </li>
+                </article>
               ))}
-            </ul>
-          </article>
-        </section>
+            </div>
+          </section>
+
+          <footer className="home-footer">
+            <span>© 2024 Wild Lens Systems</span>
+            <span>Security Protocol: AES-256</span>
+            <span>API Docs</span>
+            <span>Network Status</span>
+          </footer>
+        </div>
       </div>
 
-      <Link className="assistant-fab" href="/assistant" aria-label="Open Scuba assistant">
-        scuba
+      {/* ── SCUBA FAB ── */}
+      <Link className="scuba-fab" href="/assistant" aria-label="Open Scuba assistant">
+        <div className="scuba-dot" />
+        Scuba
       </Link>
     </main>
   );
