@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type ChangeEvent, type CSSProperties } from 'react';
 import Link from 'next/link';
 
 const captures = [
@@ -40,11 +40,11 @@ export default function GalleryReviewPage() {
   const selectedCards = cards.filter(c => c.selected);
   const hasSelection = selectedCards.length > 0;
 
-  function toggleCard(id) {
+  function toggleCard(id: number) {
     setCards(prev => prev.map(c => c.id === id ? { ...c, selected: !c.selected } : c));
   }
 
-  function handleSelectAll(e) {
+  function handleSelectAll(e: ChangeEvent<HTMLInputElement>) {
     const checked = e.target.checked;
     setSelectAll(checked);
     setCards(prev => prev.map(c => ({ ...c, selected: checked })));
@@ -782,7 +782,7 @@ export default function GalleryReviewPage() {
                     value={confidence}
                     onChange={e => setConfidence(+e.target.value)}
                     className="confidence-slider"
-                    style={{ '--val': `${confidence}%` }}
+                    style={{ '--val': `${confidence}%` } as CSSProperties}
                   />
                   <span className="confidence-val">{confidence}%</span>
                 </div>
