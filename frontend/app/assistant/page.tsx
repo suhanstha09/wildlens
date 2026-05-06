@@ -6,13 +6,34 @@ export default function AssistantPage() {
   const router = useRouter();
 
   return (
-    <main className="assistant-shell">
+    <main className="screen-shell">
+      <header className="site-topbar">
+        <div className="site-brand" aria-label="Wild Lens home">
+          <div className="brand-mark">WL</div>
+          <strong>Wild Lens</strong>
+        </div>
+
+        <div className="site-search">
+          <label className="searchbar searchbar-wide" aria-label="Search assistant">
+            <span aria-hidden="true">⌕</span>
+            <input type="search" placeholder="Search assistant..." />
+          </label>
+        </div>
+
+        <div className="site-actions">
+          <button className="icon-button" type="button" aria-label="Notifications">◔</button>
+          <button className="icon-button" type="button" aria-label="Settings">⚙</button>
+          <div className="avatar" aria-hidden="true">S</div>
+        </div>
+      </header>
+
+      <div className="assistant-shell">
       <aside className="assistant-sidebar">
         <div className="brand-lockup assistant-brand">
-          <div className="brand-mark">W</div>
+          <div className="brand-mark">WL</div>
           <div>
-            <p className="brand-title">Scuba Assistant</p>
-            <p className="brand-subtitle">Scientific companion</p>
+            <p className="brand-title">Wild Lens</p>
+            <p className="brand-subtitle">Scientific hub</p>
           </div>
         </div>
 
@@ -29,6 +50,10 @@ export default function AssistantPage() {
           <button className="query-pill" type="button">Compare heatmaps for Sector G</button>
           <button className="query-pill" type="button">List all nocturnal species found</button>
         </section>
+
+        <button className="new-dataset-button assistant-new-button" type="button">+ New Observation</button>
+        <button className="assistant-assistant-button" type="button">AI Assistant Scuba</button>
+        <a className="assistant-support-link" href="#">Support</a>
       </aside>
 
       <section className="assistant-main">
@@ -37,9 +62,13 @@ export default function AssistantPage() {
             <button className="ghost-button assistant-back-button" type="button" onClick={() => router.back()}>
               ← Back
             </button>
-            <h1>Scuba Assistant</h1>
+            <h1>Scuba AI Assistant</h1>
           </div>
-          <div className="assistant-status">MODEL: WILDLENS-LMM-4.0 · CONTEXT: REGION-AMAZONAS</div>
+          <div className="assistant-top-actions">
+            <button className="icon-button" type="button" aria-label="Notifications">◔</button>
+            <button className="icon-button" type="button" aria-label="Settings">⚙</button>
+            <div className="avatar" aria-hidden="true">S</div>
+          </div>
         </header>
 
         <div className="assistant-chat">
@@ -63,6 +92,8 @@ export default function AssistantPage() {
               <p>Jaguars are the only big cats that routinely hunt by piercing the skull of their prey. Their presence at Station 04 indicates a healthy local ecosystem and sufficient biodiversity of primary prey species like capybara and peccaries.</p>
             </div>
           </article>
+
+          <p className="assistant-meta">Scuba v2.4 · PROCESSED IN 420MS</p>
         </div>
 
         <footer className="assistant-composer">
@@ -72,6 +103,7 @@ export default function AssistantPage() {
           <button className="primary-button send-button" type="button">➤</button>
         </footer>
       </section>
+      </div>
     </main>
   );
 }
